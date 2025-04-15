@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🔥 Top Crypto Pulse</title>
+  <title>🔥 Global Crypto Pulse</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -11,10 +11,11 @@
       margin: 0;
       padding: 2rem;
       transition: background-color 0.3s ease;
+      color: #333; /* Default text color */
     }
     .dark-mode {
-      background: linear-gradient(to right, #2c3e50, #4ca1af);
-      color: #fff;
+      background: #2c3e50;
+      color: #ecf0f1; /* Light text color for dark mode */
     }
     .search-container {
       max-width: 700px;
@@ -32,6 +33,7 @@
       margin-bottom: 1rem;
       text-align: center;
       font-size: 2rem;
+      color: inherit;
     }
     .search-container input {
       width: 100%;
@@ -40,22 +42,39 @@
       border-radius: 12px;
       border: 1px solid #ccc;
     }
+    .dark-mode .search-container input {
+      background: #2c3e50;
+      color: #ecf0f1;
+      border-color: #7f8c8d;
+    }
     .suggestions {
       margin-top: 0.5rem;
       background: #f1f1f1;
       border-radius: 10px;
       overflow: hidden;
     }
+    .dark-mode .suggestions {
+      background: #34495e;
+    }
     .suggestions div {
       padding: 0.7rem 1rem;
       cursor: pointer;
     }
+    .dark-mode .suggestions div {
+      color: #ecf0f1;
+    }
     .suggestions div:hover {
       background: #ddd;
+    }
+    .dark-mode .suggestions div:hover {
+      background: #7f8c8d;
     }
     .settings {
       margin-top: 1rem;
       text-align: center;
+    }
+    .settings label {
+      color: inherit;
     }
     #live-tracking {
       max-width: 900px;
@@ -73,6 +92,10 @@
       text-align: center;
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .dark-mode .crypto-card {
+      background: #34495e;
+      color: #ecf0f1;
     }
     .crypto-card:hover {
       transform: scale(1.05);
@@ -135,7 +158,7 @@
     <button onclick="toggleTheme()">🌙 Toggle Theme</button>
   </div>
   <div class="search-container">
-    <h2>🔥 Top Crypto Pulse</h2>
+    <h2>🔥 Global Crypto Pulse</h2>
     <input type="text" id="search" placeholder="Type a crypto name or symbol...">
     <div class="suggestions" id="suggestions"></div>
     <div class="settings">
@@ -167,18 +190,22 @@
     async function fetchTrending() {
       const res = await fetch("https://api.coingecko.com/api/v3/search/trending");
       const json = await res.json();
+      console.log("Trending Coins:", json); // Added log to debug
       return json.coins.map(c => c.item);
     }
 
     async function showTopTrending() {
       const top = await fetchTrending();
-      for (let coin of top.slice(0, 5)) {
+      console.log("Top Trending Coins:", top); // Added log to debug
+      const storedCoins = ["bitcoin", "ethereum", "dogecoin", "litecoin", "binancecoin"];
+      const allCoinsToTrack = top.slice(0, 5).concat(storedCoins);
+      allCoinsToTrack.forEach(coin => {
         showLivePrice(coin.id, coin.name, coin.symbol);
-      }
+      });
     }
 
     fetchAllCoins();
-    showTopTrending();
+    showTopTrending(); // Make sure this function is being executed
 
     input.addEventListener("input", () => {
       const value = input.value.toLowerCase();
