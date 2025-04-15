@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🌍 Live Crypto Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --text: #111;
+      --card: white;
+      --accent: #00b894;
+    }
+    [data-theme="dark"] {
+      --bg: #111;
+      --text: #f5f5f5;
+      --card: #222;
+      --accent: #00cec9;
+    }
+
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 100px;
+    }
+
+    header {
+      background: var(--card);
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      margin-top: 40px;
+      max-width: 500px;
+      width: 90%;
+      padding: 20px;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .crypto {
+      margin-bottom: 30px;
+    }
+
+    .label {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--accent);
+      transition: transform 0.2s ease;
+    }
+
+    .price:hover {
+      transform: scale(1.1);
+    }
+
+    .refresh-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .toggle-theme {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    iframe {
+      border: none;
+      width: 100%;
+      height: 90px;
+      margin-top: 30px;
+      border-radius: 8px;
+    }
+
+    footer {
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 40px;
+      color: gray;
+    }
+
+    @media (max-width: 500px) {
+      .price { font-size: 2rem; }
+      header { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+
+  <button class="toggle-theme" onclick="toggleTheme()">🌓</button>
+  <header>💰 Live Bitcoin & Ethereum Tracker</header>
+
+  <div class="container">
+    <div class="crypto">
+      <div class="label">Bitcoin (BTC)</div>
+      <div id="btc-price" class="price">Loading...</div>
+    </div>
+    <div class="crypto">
+      <div class="label">Ethereum (ETH)</div>
+      <div id="eth-price" class="price">Loading...</div>
+    </div>
+
+    <!-- AdSense Placeholder -->
+    <p style="font-size: 0.8rem; color: gray;">Support this site by viewing our sponsors 👇</p>
+    <iframe src="https://dummy-ads-page.com" title="Ad"></iframe>
+  </div>
+
+  <button class="refresh-btn" onclick="fetchCrypto()">🔁 Refresh</button>
+
+  <footer>Powered by CoinGecko API | Built by You 🚀</footer>
+
+  <script>
+    async function fetchCrypto() {
+      try {
+        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
+        const data = await res.json();
+        document.getElementById('btc-price').textContent = `$${data.bitcoin.usd}`;
+        document.getElementById('eth-price').textContent = `$${data.ethereum.usd}`;
+      } catch (err) {
+        alert("Error fetching data");
+        console.log(err);
+      }
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const theme = body.getAttribute('data-theme');
+      body.setAttribute('data-theme', theme === 'dark' ? 'light' : 'dark');
+    }
+
+    fetchCrypto();
+    setInterval(fetchCrypto, 10000); // update every 10 seconds
+  </script>
+</body>
+</html>
